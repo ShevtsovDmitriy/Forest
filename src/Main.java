@@ -1,12 +1,14 @@
+import Forest.BinarySearchTree;
 import Forest.BinaryTree;
 import Forest.Tree;
 
 
 public class Main {
     public static void main(String[] args) {
-        BinaryTree<Integer> tree = new BinaryTree<Integer>();
-        tree.add(5);
-        tree.add(6);
-        tree.add(7, 1, false);
+        BinarySearchTree<Integer, String> tree = new BinarySearchTree<Integer, String>();
+        tree.add(5, "fds");
+        tree.add(4, "fesf");
+        tree.add(9, "fds00");
+        tree.add(8, "fes");
     }
 }

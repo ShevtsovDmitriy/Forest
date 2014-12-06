@@ -1,11 +1,11 @@
 package Forest;
 
-public interface Tree<V> {
-    public void add(V value);
-    public void removeByKey(Integer key);
+public interface Tree<K, V> {
+    public void add(K key, V value);
+    public void removeByKey(K key);
     public void removeByValue(V value);
-    public V foundValue(Integer key);
-    public Integer foundKey(V value);
+    public V foundValue(K key);
+    public K foundKey(V value);
     public V min();
     public V max();
 

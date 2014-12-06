@@ -1,28 +1,28 @@
 package Forest;
 
 
-public class Leaf<V> {
-    private Integer key;
+public class Leaf<K, V> {
+    private K key;
     private V value;
-    private Leaf<V> left;
-    private Leaf<V> right;
+    private Leaf<K, V> left;
+    private Leaf<K, V> right;
+    private Leaf<K, V> parent;
 
-
-
-    public Leaf(Integer key, V value) {
+    public Leaf(K key, V value, Leaf<K, V> parent) {
         this.key = key;
         this.value = value;
+        this.parent = parent;
     }
 
-    public void setLeft(Leaf<V> left) {
+    public void setLeft(Leaf<K, V> left) {
         this.left = left;
     }
 
-    public void setRight(Leaf<V> right) {
+    public void setRight(Leaf<K, V> right) {
         this.right = right;
     }
 
-    public Integer getKey() {
+    public K getKey() {
         return key;
     }
 
@@ -30,11 +30,15 @@ public class Leaf<V> {
         return value;
     }
 
-    public Leaf<V> getLeft() {
+    public Leaf<K, V> getLeft() {
         return left;
     }
 
-    public Leaf<V> getRight() {
+    public Leaf<K, V> getRight() {
         return right;
+    }
+
+    public Leaf<K, V> getParent() {
+        return parent;
     }
 }
