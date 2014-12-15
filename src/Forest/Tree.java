@@ -1,7 +1,7 @@
 package Forest;
 
-public interface Tree<K, V> {
-    public void add(K key, V value);
+public interface Tree<K, V>{
+    public boolean add(K key, V value);
     public void removeByKey(K key);
     public void removeByValue(V value);
     public V foundValue(K key);

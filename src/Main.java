@@ -9,6 +9,7 @@ public class Main {
         tree.add(5, "fds");
         tree.add(4, "fesf");
         tree.add(9, "fds00");
-        tree.add(8, "fes");
+        boolean res = tree.add(5, "fes");
+        System.out.print(res);
     }
 }

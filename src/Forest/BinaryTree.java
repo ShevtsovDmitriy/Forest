@@ -1,7 +1,12 @@
 package Forest;
 
 
-public class BinaryTree<K, V> implements Tree<K, V> {
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.Spliterator;
+import java.util.function.Consumer;
+
+public class BinaryTree<K, V> implements Tree<K, V>, Serializable, Iterable<K>{
 
     private Leaf<K, V> head;
     private int size = 0;
@@ -11,25 +16,49 @@ public class BinaryTree<K, V> implements Tree<K, V> {
     }
 
     @Override
-    public void add(K key, V value) {
+    public boolean add(K key, V value) {
         if (head == null){
             head = new Leaf<K, V>(key, value, null);
             size++;
+            return true;
         }
         else {
-            Leaf<K, V> currentElement = head;
-            Leaf<K, V> parentElement = head;
-            while (currentElement.getLeft() != null) {
-                parentElement = currentElement;
-                currentElement = currentElement.getLeft();
+            if (foundLeafByKey(key, head) != null) {
+                System.out.print("Element with this key already exists");
+                return false;
             }
-            currentElement.setLeft(new Leaf<K, V>(key, value, parentElement));
+            else {
+                Leaf<K, V> currentElement = head;
+                Leaf<K, V> parentElement = head;
+                while (currentElement.getLeft() != null) {
+                    parentElement = currentElement;
+                    currentElement = currentElement.getLeft();
+                }
+                currentElement.setLeft(new Leaf<K, V>(key, value, parentElement));
+                return true;
+            }
         }
     }
 
     @Override
     public void removeByKey(K key) {
-        //Leaf<K, V> remove = foundLeafByKey(key, head);
+        Leaf<K, V> remove = foundLeafByKey(key, head);
+        if (remove == null) return;
+        if (remove.getLeft() == null && remove.getRight() == null){
+            if (remove.getParent().getLeft() == remove) remove.getParent().setLeft(null);
+            else remove.getParent().setRight(null);
+        }
+        else {
+            if (remove.getLeft() == null) {
+                if (remove.getParent().getLeft() == remove) remove.getParent().setLeft(remove.getRight());
+                else remove.getParent().setRight(remove.getRight());
+            }
+            if (remove.getRight() == null){
+                if (remove.getParent().getLeft() == remove) remove.getParent().setLeft(remove.getLeft());
+                else remove.getParent().setRight(remove.getLeft());
+            }
+
+        }
 
     }
 
@@ -62,13 +91,24 @@ public class BinaryTree<K, V> implements Tree<K, V> {
         return null;
     }
 
-    public void add(K key, V value, K place, boolean isLeft){
+    public boolean add(K key, V value, K place, boolean isLeft){
         Leaf<K, V> parent = foundLeafByKey(place, head);
-        if(parent == null) System.out.print("Key not found");
+        if (foundLeafByKey(key, head) != null) {
+            System.out.print("Element with this key already exists");
+            return false;
+        }
+        if(parent == null){
+            System.out.print("Parent not found");
+            return false;
+        }
         else {
-            if (isLeft) parent.setLeft(new Leaf<K, V>(key, value, parent));
+            if (isLeft){
+                parent.setLeft(new Leaf<K, V>(key, value, parent));
+                return true;
+            }
             else parent.setRight(new Leaf<K, V>(key, value, parent));
             size++;
+            return true;
         }
     }
 
@@ -93,4 +133,18 @@ public class BinaryTree<K, V> implements Tree<K, V> {
     }
 
 
+    @Override
+    public Iterator<K> iterator() {
+        return null;
+    }
+
+    @Override
+    public void forEach(Consumer<? super K> action) {
+
+    }
+
+    @Override
+    public Spliterator<K> spliterator() {
+        return null;
+    }
 }
