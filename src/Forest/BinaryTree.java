@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
-public class BinaryTree<K, V> implements Tree<K, V>, Serializable, Iterable<K>{
+public class BinaryTree<K extends Comparable<K>, V> implements Tree<K, V>, Serializable, Iterable<K>{
 
     private Leaf<K, V> head;
     private int size = 0;

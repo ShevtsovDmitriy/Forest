@@ -17,7 +17,47 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
 
     @Override
     public void removeByKey(K key) {
-
+        Leaf<K, V> tmp = foundValueLeaf(key);
+        if (tmp == null) return;
+        size--;
+        if (tmp.getRight() == null){
+            if (tmp.getParent() == null) head = tmp.getLeft();
+            else {
+                if (tmp.getParent().getLeft().getKey() == tmp.getKey()){
+                    tmp.getParent().setLeft(tmp.getLeft());
+                }
+                else tmp.getParent().setRight(tmp.getLeft());
+            }
+        }
+        else {
+            Leaf<K, V> left = tmp.getLeft();
+            if (tmp.getParent() == null){
+                head = tmp.getRight();
+                tmp = tmp.getRight();
+                while (tmp.getLeft() != null){
+                    tmp = tmp.getLeft();
+                }
+                tmp.setLeft(left);
+            }
+            else {
+                if (tmp.getParent().getLeft().getKey() == tmp.getKey()){
+                    tmp.getParent().setLeft(tmp.getRight());
+                    tmp = tmp.getRight();
+                    while (tmp.getLeft() != null){
+                        tmp = tmp.getLeft();
+                    }
+                    tmp.setLeft(left);
+                }
+                else {
+                    tmp.getParent().setRight(tmp.getRight());
+                    tmp = tmp.getRight();
+                    while (tmp.getLeft() != null) {
+                        tmp = tmp.getLeft();
+                    }
+                    tmp.setLeft(left);
+                }
+            }
+        }
     }
 
     @Override
@@ -25,8 +65,27 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
 
     }
 
+    protected Leaf<K, V> foundValueLeaf(K key){
+        Leaf<K, V> tmp = head;
+        while (tmp != null) {
+            int cmp = tmp.getKey().compareTo(key);
+            if (cmp == 0) {
+                return tmp;
+            }
+            if (cmp < 0) {
+                tmp = tmp.getRight();
+            } else tmp = tmp.getLeft();
+        }
+        return null;
+    }
+
     @Override
     public V foundValue(K key) {
+        Leaf<K, V> tmp = foundValueLeaf(key);
+        if (tmp != null){
+            return tmp.getValue();
+        }
+        System.out.print("\nKey not found");
         return null;
     }
 
@@ -68,7 +127,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
             }
             else return add(key, value, place.getRight());
         }
-        else System.out.print("Element with this key already exists");
+        else System.out.print("\nElement with this key already exists");
         return false;
     }
 

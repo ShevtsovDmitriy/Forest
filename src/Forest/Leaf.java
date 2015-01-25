@@ -1,7 +1,7 @@
 package Forest;
 
 
-public class Leaf<K, V> {
+public class Leaf<K extends Comparable<K>, V> {
     private K key;
     private V value;
     private Leaf<K, V> left;

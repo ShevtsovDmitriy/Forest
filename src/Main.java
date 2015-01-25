@@ -1,6 +1,5 @@
 import Forest.BinarySearchTree;
-import Forest.BinaryTree;
-import Forest.Tree;
+
 
 
 public class Main {
@@ -9,7 +8,11 @@ public class Main {
         tree.add(5, "fds");
         tree.add(4, "fesf");
         tree.add(9, "fds00");
-        boolean res = tree.add(5, "fes");
-        System.out.print(res);
+        tree.add(6, "fes");
+        tree.add(7, "fds");
+        tree.add(11, "fesf");
+        tree.add(3, "fds00");
+        tree.add(10, "fes");
+        tree.removeByKey(5);
     }
 }
