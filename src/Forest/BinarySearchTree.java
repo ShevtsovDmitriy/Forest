@@ -17,7 +17,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
 
     @Override
     public void removeByKey(K key) {
-        Leaf<K, V> tmp = foundValueLeaf(key);
+        Leaf<K, V> tmp = foundLeafByKey(key);
         if (tmp == null) return;
         size--;
         if (tmp.getRight() == null){
@@ -65,7 +65,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
 
     }
 
-    protected Leaf<K, V> foundValueLeaf(K key){
+    protected Leaf<K, V> foundLeafByKey(K key){
         Leaf<K, V> tmp = head;
         while (tmp != null) {
             int cmp = tmp.getKey().compareTo(key);
@@ -81,7 +81,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
 
     @Override
     public V foundValue(K key) {
-        Leaf<K, V> tmp = foundValueLeaf(key);
+        Leaf<K, V> tmp = foundLeafByKey(key);
         if (tmp != null){
             return tmp.getValue();
         }

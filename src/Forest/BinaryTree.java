@@ -6,10 +6,12 @@ import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
-public class BinaryTree<K extends Comparable<K>, V> implements Tree<K, V>, Serializable, Iterable<K>{
+public class BinaryTree<K extends Comparable<K>, V extends Comparable<V>> implements Tree<K, V>, Serializable, Iterable<K>{
 
     private Leaf<K, V> head;
     private int size = 0;
+    private V min;
+    private V max;
 
     public int getSize() {
         return size;
@@ -42,26 +44,48 @@ public class BinaryTree<K extends Comparable<K>, V> implements Tree<K, V>, Seria
 
     @Override
     public void removeByKey(K key) {
-        Leaf<K, V> remove = foundLeafByKey(key, head);
-        if (remove == null) return;
-        if (remove.getLeft() == null && remove.getRight() == null){
-            if (remove.getParent().getLeft() == remove) remove.getParent().setLeft(null);
-            else remove.getParent().setRight(null);
+        Leaf<K, V> tmp = foundLeafByKey(key, head);
+        if (tmp == null) return;
+        size--;
+        if (tmp.getRight() == null){
+            if (tmp.getParent() == null) head = tmp.getLeft();
+            else {
+                if (tmp.getParent().getLeft().getKey() == tmp.getKey()){
+                    tmp.getParent().setLeft(tmp.getLeft());
+                }
+                else tmp.getParent().setRight(tmp.getLeft());
+            }
         }
         else {
-            if (remove.getLeft() == null) {
-                if (remove.getParent().getLeft() == remove) remove.getParent().setLeft(remove.getRight());
-                else remove.getParent().setRight(remove.getRight());
+            Leaf<K, V> left = tmp.getLeft();
+            if (tmp.getParent() == null){
+                head = tmp.getRight();
+                tmp = tmp.getRight();
+                while (tmp.getLeft() != null){
+                    tmp = tmp.getLeft();
+                }
+                tmp.setLeft(left);
             }
-            if (remove.getRight() == null){
-                if (remove.getParent().getLeft() == remove) remove.getParent().setLeft(remove.getLeft());
-                else remove.getParent().setRight(remove.getLeft());
+            else {
+                if (tmp.getParent().getLeft().getKey() == tmp.getKey()){
+                    tmp.getParent().setLeft(tmp.getRight());
+                    tmp = tmp.getRight();
+                    while (tmp.getLeft() != null){
+                        tmp = tmp.getLeft();
+                    }
+                    tmp.setLeft(left);
+                }
+                else {
+                    tmp.getParent().setRight(tmp.getRight());
+                    tmp = tmp.getRight();
+                    while (tmp.getLeft() != null) {
+                        tmp = tmp.getLeft();
+                    }
+                    tmp.setLeft(left);
+                }
             }
-
         }
-
     }
-
     @Override
     public void removeByValue(V value) {
 
@@ -81,24 +105,57 @@ public class BinaryTree<K extends Comparable<K>, V> implements Tree<K, V>, Seria
         return null;
     }
 
-    @Override
-    public V min() {
-        return null;
+    private void foundMin(Leaf<K, V> currentLeaf){
+        if (currentLeaf.getValue().compareTo(min) < 0){
+            min = currentLeaf.getValue();
+        }
+        if (currentLeaf.getLeft() != null) {
+            foundMin(currentLeaf.getLeft());
+        }
+        if (currentLeaf.getRight() != null){
+            foundMin(currentLeaf.getRight());
+        }
+    }
+
+    private void foundMax(Leaf<K, V> currentLeaf){
+        if (currentLeaf.getValue().compareTo(max) > 0){
+            max = currentLeaf.getValue();
+        }
+        if (currentLeaf.getLeft() != null) {
+            foundMax(currentLeaf.getLeft());
+        }
+        if (currentLeaf.getRight() != null){
+            foundMax(currentLeaf.getRight());
+        }
     }
 
     @Override
+    public V min() {
+        if (head != null) {
+            min = head.getValue();
+            foundMin(head);
+            return min;
+        }
+        return null;
+    }
+    @Override
     public V max() {
+        if (head != null) {
+            max = head.getValue();
+            foundMax(head);
+            return max;
+        }
         return null;
     }
 
     public boolean add(K key, V value, K place, boolean isLeft){
         Leaf<K, V> parent = foundLeafByKey(place, head);
         if (foundLeafByKey(key, head) != null) {
-            System.out.print("Element with this key already exists");
+            System.out.print("\nElement with this key already exists");
             return false;
         }
         if(parent == null){
-            System.out.print("Parent not found");
+            System.out.print("\nParent not found");
             return false;
         }
         else {
