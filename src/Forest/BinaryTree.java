@@ -1,17 +1,17 @@
 package Forest;
 
-
-import java.io.Serializable;
 import java.util.Iterator;
-import java.util.Spliterator;
-import java.util.function.Consumer;
+import java.util.Stack;
 
-public class BinaryTree<K extends Comparable<K>, V extends Comparable<V>> implements Tree<K, V>, Serializable, Iterable<K>{
+
+public class BinaryTree<K extends Comparable<K>, V extends Comparable<V>> implements Tree<K, V>{
 
     private Leaf<K, V> head;
     private int size = 0;
     private V min;
     private V max;
+
+    private Stack<K> index;
 
     public int getSize() {
         return size;
@@ -26,7 +26,7 @@ public class BinaryTree<K extends Comparable<K>, V extends Comparable<V>> implem
         }
         else {
             if (foundLeafByKey(key, head) != null) {
-                System.out.print("Element with this key already exists");
+                System.out.print("\nElement with this key already exists");
                 return false;
             }
             else {
@@ -190,18 +190,32 @@ public class BinaryTree<K extends Comparable<K>, V extends Comparable<V>> implem
     }
 
 
+    private void pushToStack(Leaf<K, V> currentLeaf){
+        if (currentLeaf.getLeft() != null){
+            pushToStack(currentLeaf);
+        }
+        index.push(currentLeaf.getKey());
+        if (currentLeaf.getRight() != null){
+            pushToStack(currentLeaf);
+        }
+    }
+
     @Override
     public Iterator<K> iterator() {
-        return null;
-    }
+        index = new Stack<K>();
+        if (head != null) pushToStack(head);
 
-    @Override
-    public void forEach(Consumer<? super K> action) {
+        return new Iterator<K>() {
 
-    }
+            @Override
+            public boolean hasNext() {
+                return !index.empty();
+            }
 
-    @Override
-    public Spliterator<K> spliterator() {
-        return null;
+            @Override
+            public K next() {
+                return index.pop();
+            }
+        };
     }
 }

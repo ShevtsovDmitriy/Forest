@@ -2,14 +2,16 @@ package Forest;
 
 import java.io.Serializable;
 import java.util.Iterator;
-import java.util.Stack;
 
-public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> {
+public class AVLTree<K extends Comparable<K>, V extends Comparable<V>> implements Tree<K, V>, Serializable, Iterable<K>{
 
     private Leaf<K, V> head;
     private int size = 0;
 
-    private Stack<K> index;
+    @Override
+    public Iterator<K> iterator() {
+        return null;
+    }
 
     @Override
     public boolean add(K key, V value) {
@@ -23,47 +25,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
 
     @Override
     public void removeByKey(K key) {
-        Leaf<K, V> tmp = foundLeafByKey(key);
-        if (tmp == null) return;
-        size--;
-        if (tmp.getRight() == null){
-            if (tmp.getParent() == null) head = tmp.getLeft();
-            else {
-                if (tmp.getParent().getLeft().getKey() == tmp.getKey()){
-                    tmp.getParent().setLeft(tmp.getLeft());
-                }
-                else tmp.getParent().setRight(tmp.getLeft());
-            }
-        }
-        else {
-            Leaf<K, V> left = tmp.getLeft();
-            if (tmp.getParent() == null){
-                head = tmp.getRight();
-                tmp = tmp.getRight();
-                while (tmp.getLeft() != null){
-                    tmp = tmp.getLeft();
-                }
-                tmp.setLeft(left);
-            }
-            else {
-                if (tmp.getParent().getLeft().getKey() == tmp.getKey()){
-                    tmp.getParent().setLeft(tmp.getRight());
-                    tmp = tmp.getRight();
-                    while (tmp.getLeft() != null){
-                        tmp = tmp.getLeft();
-                    }
-                    tmp.setLeft(left);
-                }
-                else {
-                    tmp.getParent().setRight(tmp.getRight());
-                    tmp = tmp.getRight();
-                    while (tmp.getLeft() != null) {
-                        tmp = tmp.getLeft();
-                    }
-                    tmp.setLeft(left);
-                }
-            }
-        }
+
     }
 
     @Override
@@ -116,6 +78,8 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
         return currentElement.getValue();
     }
 
+
+
     private boolean add(K key, V value, Leaf<K, V> place){
         if (place.getKey().compareTo(key) > 0){
             if(place.getLeft() == null){
@@ -136,35 +100,4 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
         else System.out.print("\nElement with this key already exists");
         return false;
     }
-
-    private void pushToStack(Leaf<K, V> currentLeaf){
-        if (currentLeaf.getLeft() != null){
-            pushToStack(currentLeaf);
-        }
-        index.push(currentLeaf.getKey());
-        if (currentLeaf.getRight() != null){
-            pushToStack(currentLeaf);
-        }
-    }
-
-    @Override
-    public Iterator<K> iterator() {
-        index = new Stack<K>();
-        if (head != null) pushToStack(head);
-
-        return new Iterator<K>() {
-
-            @Override
-            public boolean hasNext() {
-                return !index.empty();
-            }
-
-            @Override
-            public K next() {
-                return index.pop();
-            }
-        };
-    }
-
-
 }
